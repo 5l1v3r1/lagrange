@@ -1,0 +1,22 @@
+#ifndef __LAGRANGE_H__
+#define __LAGRANGE_H__
+
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+
+#define NUM_OF_TERMS 4
+
+typedef uint8_t u8;
+
+typedef struct {
+    u8 coefficients[NUM_OF_TERMS];
+    u8 xvalues[NUM_OF_TERMS];
+    int degree;
+} lagrange_t;
+
+lagrange_t * new_polynomial(u8 coefficients[], u8 xvalues[]);
+
+
+
+#endif
