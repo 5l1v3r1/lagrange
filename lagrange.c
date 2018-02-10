@@ -1,9 +1,18 @@
 #include "lagrange.h"
+#include "galois.h"
 
 
-lagrange_t * new_polynomial(u8 coefficients[], u8 xvalues[]){
+/* Create a new polynomial_t type
 
-    // Create a new lagrange_t object, set the degree
+    i.e
+        3x^3 + 4x^2 + 9x + 5
+
+        u8 coefficients[4] = {3, 4, 9, 5};
+*/
+lagrange_t * 
+new_polynomial(u8 coefficients[]){
+
+    /* Create a new lagrange_t object, set the degree */
     lagrange_t *lt = (lagrange_t*) malloc(sizeof(lagrange_t));
     u8 degree = 0;
 
@@ -14,7 +23,6 @@ lagrange_t * new_polynomial(u8 coefficients[], u8 xvalues[]){
     degree = sizeof(coefficients) / sizeof(u8) + 1;
 
     lt->coefficients = coefficients;
-    lt->xvalues = xvalues;
     lt->degree = degree;
 
     return lt;

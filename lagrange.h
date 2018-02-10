@@ -11,11 +11,11 @@ typedef uint8_t u8;
 
 typedef struct {
     u8 coefficients[NUM_OF_TERMS];
-    u8 xvalues[NUM_OF_TERMS];
     int degree;
 } lagrange_t;
 
-lagrange_t * new_polynomial(u8 coefficients[], u8 xvalues[]);
+lagrange_t * 
+new_polynomial(u8 coefficients[]); 
 
 
 
