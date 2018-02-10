@@ -17,6 +17,7 @@ typedef struct {
 lagrange_t * 
 new_polynomial(u8 coefficients[]); 
 
-
+void
+lagrange_free(lagrange_t * poly);
 
 #endif

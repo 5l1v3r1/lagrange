@@ -2,13 +2,21 @@
 #include "galois.h"
 
 
-/* Create a new polynomial_t type
+/* new_polynomial()
+ *
+ * Create a new polynomial_t type.
+ *
+ * We can use this polynomial_t type in order to
+ * either construct points, or to compare (assert) with the reconstruction
+ * of the same polynomial with a set of points
+ *
+ *  i.e
+ *      3x^3 + 4x^2 + 9x + 5
+ *      u8 coefficients[4] = {3, 4, 9, 5};
+ *      lagrange_t * poly1 = new_polynomial(coefficients);
+ *      
+*/      
 
-    i.e
-        3x^3 + 4x^2 + 9x + 5
-
-        u8 coefficients[4] = {3, 4, 9, 5};
-*/
 lagrange_t * 
 new_polynomial(u8 coefficients[]){
 
@@ -27,3 +35,21 @@ new_polynomial(u8 coefficients[]){
 
     return lt;
 }
+
+/* Since each lagrange_t is heapsized, we must ensure that they disappear
+ * after execution of necessary functions
+*/
+
+void lagrange_free(lagrange_t * poly){
+    free(poly);
+}
+
+void create_points(lagrange_t poly); // return randomly generated points
+
+void lagrange_reconstruct(lagrange_t poly, u8 xvalues[]); // reconstruct polynomial and compare with original poly type coefficients
+
+
+
+
+
+

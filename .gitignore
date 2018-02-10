@@ -1,1 +1,5 @@
-langrange
+*.o
+*.h.gch
+lagrange
+test-lagrange
+
