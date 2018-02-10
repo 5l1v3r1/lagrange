@@ -11,7 +11,7 @@ typedef uint8_t u8;
 
 typedef struct {
     u8 coefficients[NUM_OF_TERMS];
-    int degree;
+    u8 degree;
 } lagrange_t;
 
 lagrange_t * 
