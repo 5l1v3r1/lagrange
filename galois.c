@@ -112,7 +112,7 @@ galois_t GALOIS_MULT_INV_TABLE[256] =
 	        0xdd, 0x9c, 0x7d, 0xa0, 0xcd, 0x1a, 0x41, 0x1c
     };
 
-static galois_t 
+galois_t 
 galois_add(galois_t a, galois_t b) {
 	return a^b;
 }
@@ -121,12 +121,12 @@ galois_add(galois_t a, galois_t b) {
  * are identical; since subtraction is adding with signed values,
  * XOR is an efficient operation */
 
-static galois_t 
+galois_t 
 galois_subtract(galois_t a, galois_t b) {
     return a^b;
 }
 
-static galois_t 
+galois_t 
 galois_multiply(galois_t a, galois_t b) {
     
     /* where any value multipled by 0 returns 0 for any arithmetic*/
@@ -138,7 +138,7 @@ galois_multiply(galois_t a, galois_t b) {
 
 }
 
-static galois_t
+galois_t
 galois_divide(galois_t a, galois_t b){
     
     /* where numerator is 0, returning 0 as quotient for any arithmetic */
