@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef unsigned char galois_t
+typedef unsigned char galois_t;
 
 galois_t
 galois_add(galois_t a, galois_t b);

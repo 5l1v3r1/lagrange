@@ -5,17 +5,22 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#define NUM_OF_TERMS 4
+#define SIZEOF(coefficients) sizeof(coefficients) / sizeof(coefficients[0])
 
 typedef uint8_t u8;
 
 typedef struct {
-    u8 coefficients[NUM_OF_TERMS];
+    u8 * coefficients;
     u8 degree;
 } lagrange_t;
 
-lagrange_t * 
-new_polynomial(u8 coefficients[]); 
+typedef struct {
+    u8 x;
+    u8 y;
+} lagrange_coordinate;
+
+lagrange_t *
+new_polynomial(u8 coefficients[]);
 
 void
 lagrange_free(lagrange_t * poly);

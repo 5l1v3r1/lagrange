@@ -1,34 +1,29 @@
 #include "lagrange.h"
 #include "galois.h"
 
-
 /* new_polynomial()
  *
  * Create a new polynomial_t type.
  *
  * We can use this polynomial_t type in order to
- * either construct points, or to compare (assert) with the reconstruction
- * of the same polynomial with a set of points
+ *  1. Test against (x,y) points (hence, providing a preset number of coefficients)
+ *  2. Reconstruct coefficients (hence, initializing the structure with NULLs)
+ *
+ *
+ * Since arrays passed to functions automatically defer to pointers, we can
+ * obtain the degree within the function parameter by calling the SIZEOF(..)
+ * helper macro.
  *
  *  i.e
- *      3x^3 + 4x^2 + 9x + 5
+ *      // 3x^3 + 4x^2 + 9x + 5
  *      u8 coefficients[4] = {3, 4, 9, 5};
- *      lagrange_t * poly1 = new_polynomial(coefficients);
- *      
-*/      
+ *      lagrange_t * poly1 = lagrange_new(coefficients, SIZEOF(coefficients));
+ *
+*/
 
-lagrange_t * 
-new_polynomial(u8 coefficients[]){
-
-    /* Create a new lagrange_t object, set the degree */
+lagrange_t *
+lagrange_new(u8 coefficients[], u8 degree){
     lagrange_t *lt = (lagrange_t*) malloc(sizeof(lagrange_t));
-    u8 degree = 0;
-
-    /* The number of terms in a polynomial = degree + 1
-          i.e degree of 3 = 4 terms
-          x^3 + x^2 + x + k
-    */
-    degree = sizeof(coefficients) / sizeof(u8) + 1;
 
     lt->coefficients = coefficients;
     lt->degree = degree;
@@ -36,20 +31,50 @@ new_polynomial(u8 coefficients[]){
     return lt;
 }
 
-/* Since each lagrange_t is heapsized, we must ensure that they disappear
- * after execution of necessary functions
-*/
+lagrange_coordinate *
+lagrange_create_point(u8 x, u8 y)
+{
+  lagrange_coordinate *lc = (lagrange_coordinate*) malloc(sizeof(lagrange_coordinate));
 
-void lagrange_free(lagrange_t * poly){
-    free(poly);
+  lc->x = x;
+  lc->y = y;
+
+  return lc;
+
 }
 
-void create_points(lagrange_t poly); // return randomly generated points
+/* lagrange_reconstruct()
+ *
+ * Using a NULLed lagrange_t and a set of coordinates, reconstruct coefficients
+ *
+ * Once the user creates a lagrange_t polynomial with no coefficients and no degree,
+ * he/she can then reconstruct the coefficients using a set of coordinate points.
+ *
+ *  i.e
+ *      lagrange_coordinate one = (lagrange_coordinate) lagrange_create_point(0, 3);
+ *
+ *      lagrange_coordinate set[1] = {one};
+ *
+ *      lagrange_t * poly1 = lagrange_new(NULL, NULL);
+ *      lagrange_reconstruct(poly1, set, SIZEOF(set));
+ *
+*/
 
-void lagrange_reconstruct(lagrange_t poly, u8 xvalues[]); // reconstruct polynomial and compare with original poly type coefficients
+void
+lagrange_reconstruct(lagrange_t * polynomial, lagrange_coordinate coordinates[], u8 size)
+{
 
 
+}
 
+/* lagrange_free()
+ *
+ * Free heapsized lagrange_t at the end of program execution
+ *
+*/
 
-
-
+void
+lagrange_free(lagrange_t * poly)
+{
+    free(poly);
+}
