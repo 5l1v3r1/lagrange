@@ -1,7 +1,7 @@
 #include "galois.h"
 
 static const
-galois_t GALOIS_EXP_TABLE[256] =
+u8 GALOIS_EXP_TABLE[256] =
 {
     0x01, 0x03, 0x05, 0x0f, 0x11, 0x33, 0x55, 0xff,
     0x1a, 0x2e, 0x72, 0x96, 0xa1, 0xf8, 0x13, 0x35,
@@ -39,7 +39,7 @@ galois_t GALOIS_EXP_TABLE[256] =
 
 
 static const
-galois_t GALOIS_LOG_TABLE[256] =
+u8 GALOIS_LOG_TABLE[256] =
 {
     0x00, 0x00, 0x19, 0x01, 0x32, 0x02, 0x1a, 0xc6,
     0x4b, 0xc7, 0x1b, 0x68, 0x33, 0xee, 0xdf, 0x03,
@@ -76,7 +76,7 @@ galois_t GALOIS_LOG_TABLE[256] =
 };
 
 static const
-galois_t GALOIS_MULT_INV_TABLE[256] =
+u8 GALOIS_MULT_INV_TABLE[256] =
 {
     0x00, 0x01, 0x8d, 0xf6, 0xcb, 0x52, 0x7b, 0xd1,
     0xe8, 0x4f, 0x29, 0xc0, 0xb0, 0xe1, 0xe5, 0xc7,
@@ -119,18 +119,18 @@ galois_t GALOIS_MULT_INV_TABLE[256] =
  * are identical; since subtraction is adding with signed values,
  * XOR is an efficient operation */
 
-galois_t
-galois_add(galois_t a, galois_t b) {
+u8
+galois_add(u8 a, u8 b) {
 	return a^b;
 }
 
-galois_t
-galois_subtract(galois_t a, galois_t b) {
+u8
+galois_subtract(u8 a, u8 b) {
     return a^b;
 }
 
-galois_t
-galois_multiply(galois_t a, galois_t b) {
+u8
+galois_multiply(u8 a, u8 b) {
 
     /* where any value multipled by 0 returns 0 for any arithmetic*/
     if ( (a==0) || (b==0) ){
@@ -138,8 +138,8 @@ galois_multiply(galois_t a, galois_t b) {
     }
 }
 
-galois_t
-galois_divide(galois_t a, galois_t b){
+u8
+galois_divide(u8 a, u8 b){
 
     /* where numerator is 0, returning 0 as quotient for any arithmetic */
     if ( a == 0 )

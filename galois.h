@@ -4,19 +4,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef unsigned char galois_t;
+typedef uint8_t u8;
 
-galois_t
-galois_add(galois_t a, galois_t b);
+u8
+galois_add(u8 a, u8 b);
 
-galois_t
-galois_subtract(galois_t a, galois_t b);
+u8
+galois_subtract(u8 a, u8 b);
 
-galois_t
-galois_multiply(galois_t a, galois_t b);
+u8
+galois_multiply(u8 a, u8 b);
 
-galois_t
-galois_divide(galois_t a, galois_t b);
+u8
+galois_divide(u8 a, u8 b);
 
 
 #endif

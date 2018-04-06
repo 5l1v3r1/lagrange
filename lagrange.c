@@ -1,7 +1,7 @@
 #include "lagrange.h"
 #include "galois.h"
 
-/* new_polynomial()
+/* lagrange_new()
  *
  * Create a new polynomial_t type.
  *
@@ -67,14 +67,15 @@ lagrange_reconstruct(lagrange_t * polynomial, lagrange_coordinate coordinates[],
 
 }
 
-/* lagrange_free()
+/* lagrange_test()
  *
- * Free heapsized lagrange_t at the end of program execution
+ * Using a preset of coordinates and a preset lagrange_t polynomial, test to
+ * see if the coordinates correspond with points plotted on a polynomial
  *
 */
 
 void
-lagrange_free(lagrange_t * poly)
+lagrange_test(lagrange_t * polynomial, lagrange_coordinate coordinates[], u8 size)
 {
-    free(poly);
+
 }

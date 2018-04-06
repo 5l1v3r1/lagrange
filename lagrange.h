@@ -5,9 +5,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#define SIZEOF(coefficients) sizeof(coefficients) / sizeof(coefficients[0])
+#include "galois.h"
 
-typedef uint8_t u8;
+#define SIZEOF(coefficients) sizeof(coefficients) / sizeof(coefficients[0])
 
 typedef struct {
     u8 * coefficients;
