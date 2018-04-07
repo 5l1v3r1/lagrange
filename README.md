@@ -1,6 +1,11 @@
 # lagrange
 
-1. How can we implement mathematical libraries in low-level assemblers for incredibly fast calculation?
-2. How can we wrap fast-libraries into APIs readily available for high-level programming environments?
-
 __lagrange__ is a library built for fast polynomial interpolation within a Galois-256 finite field.
+
+## Research
+
+__lagrange__ is a research project built for [turingmachines](https://turingmachines.github.io). To learn more about how it is implemented, you can read the [whitepaper](https://www.sharelatex.com/read/ktzwqfqghsgq), which is still in-progress.
+
+## Example
+
+_TODO_. Whoops.
