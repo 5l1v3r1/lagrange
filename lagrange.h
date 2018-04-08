@@ -8,6 +8,8 @@
 #include "galois.h"
 
 #define SIZEOF(coefficients) sizeof(coefficients) / sizeof(coefficients[0])
+#define GALOIS_MODE 0
+
 
 typedef struct {
     u8 * coefficients;
@@ -19,10 +21,6 @@ typedef struct {
     u8 y;
 } lagrange_coordinate;
 
-lagrange_t *
-new_polynomial(u8 coefficients[]);
-
-void
-lagrange_free(lagrange_t * poly);
+// TODO: functions
 
 #endif
