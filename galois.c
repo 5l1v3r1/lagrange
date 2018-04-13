@@ -115,9 +115,14 @@ u8 GALOIS_MULT_INV_TABLE[256] =
 /* =======================================
  * Galois Arithmetic Operations
  * =======================================
- * Notice that the implementations of addition and subtraction
+ * NOTE: Notice that the implementations of addition and subtraction
  * are identical; since subtraction is adding with signed values,
- * XOR is an efficient operation */
+ * XOR is an efficient operation
+ *
+ * NOTE: bit manipulation can be implemented for multiplication / inverse (division)
+ * operations, but lookup tables increases performance and is optimal for cryptography
+ * mathematical operations (such as in AES).
+ */
 
 u8
 galois_add(u8 a, u8 b) {
@@ -136,6 +141,8 @@ galois_multiply(u8 a, u8 b) {
     if ( (a==0) || (b==0) ){
         return 0;
     }
+
+    // TODO: implement table lookup
 }
 
 u8
@@ -150,4 +157,6 @@ galois_divide(u8 a, u8 b){
         fprintf(stderr, "division by zero");
         exit(1);
     }
+
+    // TODO: implement table lookup
 }

@@ -9,16 +9,26 @@
 
 #define SIZEOF(coefficients) sizeof(coefficients) / sizeof(coefficients[0])
 
-/* Reference- Implements Galois Mode - can be included to complete operations with
-Galois arithmetic operations
-// #define GALOIS_MODE 0
+/*
+Galois Mode - can be included to complete operations with Galois arithmetic
+operations
+
+#define GALOIS_MODE 0
+
 */
 
+/* Represents the core lagrange_t type, which will be used to reconstruct a polynomial
+ * based on its coefficients and its computed degree
+*/
 typedef struct {
     u8 * coefficients;
     u8 degree;
 } lagrange_t;
 
+
+/* Represents a tuple-like Cartesian x-y coordinate, which can be used to create
+ * points for polynomial reconstruction through interpolation
+*/
 typedef struct {
     u8 x;
     u8 y;
