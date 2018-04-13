@@ -1,7 +1,11 @@
 #include "lagrange.h"
 
-int main(){
-  int test[12] = {1, 2, 3, 4};
+#define GALOIS_MODE 0
 
-  printf("%i", (int) len(test));
+int main(){
+
+    u8 coefficients[4] = { 0, 1, 0, 0 }; // represents decimal 5.
+
+    lagrange_t * test_poly = lagrange_new(coefficients, SIZEOF(coefficients));
+
 }

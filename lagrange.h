@@ -8,8 +8,11 @@
 #include "galois.h"
 
 #define SIZEOF(coefficients) sizeof(coefficients) / sizeof(coefficients[0])
-#define GALOIS_MODE 0
 
+/* Reference- Implements Galois Mode - can be included to complete operations with
+Galois arithmetic operations
+// #define GALOIS_MODE 0
+*/
 
 typedef struct {
     u8 * coefficients;

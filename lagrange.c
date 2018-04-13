@@ -10,9 +10,13 @@
  *  2. Reconstruct coefficients (hence, initializing the structure with NULLs)
  *
  *
- * Since arrays passed to functions automatically defer to pointers, we can
+ * NOTE: Since arrays passed to functions automatically defer to pointers, we can
  * obtain the degree within the function parameter by calling the SIZEOF(..)
  * helper macro.
+ *
+ * NOTE: when actually utilizing Galois mode, the coefficients array must be filled
+ * with either 1s or 0s. Notice how that this will represent an actual decimal value.
+ * For example, {0, 0, 1, 1} is a decimal 3.
  *
  *  i.e
  *      // 3x^3 + 4x^2 + 9x + 5
@@ -24,7 +28,6 @@
 lagrange_t *
 lagrange_new(u8 coefficients[], u8 size)
 {
-
     /* number of terms - 1 = degree */
     u8 degree = size - 1;
 
@@ -32,18 +35,20 @@ lagrange_new(u8 coefficients[], u8 size)
     lagrange_t *lt = (lagrange_t*) malloc(sizeof(lagrange_t));
 
     /* error-checking: check if GALOIS_FLAG is set ensure coefficients and degree */
-    #ifndef GALOIS_MODE
+    #ifdef GALOIS_MODE
+    // continues on with code execution
+    #else
 
       /* check coefficients to be binary, since they must be within the field of Gf(2) */
       for ( u8 i = 0; i <= size; i++ ){
-          if ( coefficients[i] != 0 || coefficients[i] != 1 )
-            fprintf(stderr, "GALOIS_MODE: coefficients must be binary");
+          if ( coefficients[i] != 0 && coefficients[i] != 1 )
+            fprintf(stderr, "GALOIS_MODE: coefficient \"%u\" must be binary\n", coefficients[i]);
             exit(1);
       }
 
       /* check degree <= 7, since Gf(p^m) requires coefficients with degree <= m - 1 */
-      if !( degree <= 7 ){
-          fprintf(stderr, "GALOIS_MODE: degree specified %s must be less than 7.", degree);
+      if (degree >= 7){
+          fprintf(stderr, "GALOIS_MODE: degree specified %u must be less than 7.\n", degree);
           exit(1);
       }
 
@@ -102,10 +107,21 @@ lagrange_reconstruct(lagrange_t * polynomial, lagrange_coordinate coordinates[],
  * Using a preset of coordinates and a preset lagrange_t polynomial, test to
  * see if the coordinates correspond with points plotted on a polynomial
  *
+ * The process for completing this operation is as follows:
+ *  1. Create a new lagrange_t polynomial with coefficients and degree
+ *  2. Create a set of coordinates for polynomial
+ *  3. Reconstruct polynomial from coordinates, check against previous lagrange_t type.
 */
 
 void
 lagrange_test(lagrange_t * polynomial, lagrange_coordinate coordinates[], u8 size)
 {
+
+}
+
+static void
+compute_lagrange()
+{
+
 
 }
