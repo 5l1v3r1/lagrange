@@ -1,9 +1,12 @@
 #include "lagrange.h"
 #include "galois.h"
+// TODO: decimal to binary coefficients array helper
 
 /* lagrange_new()
  *
- * Create a new polynomial_t type.
+ * Create a new polynomial_t type, in the standard form:
+ *    x^a ± x^a-1 ± x^a-2 ± ... x^a-n
+ * where a = degree of the polynomial
  *
  * We can use this polynomial_t type in order to
  *  1. Test against (x,y) points (hence, providing a preset number of coefficients)
@@ -25,21 +28,18 @@
  *      lagrange_t * poly1 = lagrange_new(coefficients, SIZEOF(coefficients));
  *
 */
-
-// TODO: decimal to binary coefficients array helper
-
-
 lagrange_t *
 lagrange_new(u8 coefficients[], u8 size)
 {
     /* number of terms - 1 = degree */
-    u8 degree = size - 1;
+    u8 degree;
+    degree = size - 1;
 
     /* create a new heap-allocated lagrange_t type */
     lagrange_t *lt = (lagrange_t*) malloc(sizeof(lagrange_t));
 
     /* error-checking: check if GALOIS_MODE is set ensure coefficients */
-    #ifdef GALOIS_MODE
+    #ifndef GALOIS_MODE
     // continues on with code execution
     #else
 
@@ -88,8 +88,8 @@ lagrange_create_point(u8 x, u8 y)
  *
  *  i.e
  *      lagrange_coordinate one = (lagrange_coordinate) lagrange_create_point(0, 3);
- *
- *      lagrange_coordinate set[1] = {one};
+ *      // .. etc. etc.
+ *      lagrange_coordinate set[1] = { one, two, three, four, five };
  *
  *      lagrange_t * poly1 = lagrange_new(NULL, NULL);
  *      lagrange_reconstruct(poly1, set, SIZEOF(set));
@@ -99,7 +99,8 @@ lagrange_create_point(u8 x, u8 y)
 void
 lagrange_reconstruct(lagrange_t * polynomial, lagrange_coordinate coordinates[], u8 size)
 {
-
+  // Perform interpolation for coordinate points
+  // Fill up polynomial struct with result
 
 }
 
@@ -112,12 +113,39 @@ lagrange_reconstruct(lagrange_t * polynomial, lagrange_coordinate coordinates[],
  *  1. Create a new lagrange_t polynomial with coefficients and degree
  *  2. Create a set of coordinates for polynomial
  *  3. Reconstruct polynomial from coordinates, check against previous lagrange_t type.
+ *
+ * i.e
+ *      lagrange_coordinate test_set[5] = { one, two, three, four, five };
+ *      u8 test_coefficients[5] = { 1, 2, 3, 4, 5 };
+ *
+ *      lagrange_t * testpoly = lagrange_new(test_coefficients, SIZEOF(test_coefficients));
+ *      lagrange_test(testpoly, test_set, SIZEOF(test_set));
 */
 
 void
-lagrange_test(lagrange_t * polynomial, lagrange_coordinate coordinates[], u8 size)
+lagrange_test(lagrange_t * polynomial, lagrange_coordinate * coordinates[], u8 size)
 {
+   /* error-check: ensure polynomial coefficients match number of coordinates
+    * where points + 1 = degree and points = number of terms (coefficients and constant)
+    */
+    if ( polynomial->degree != size - 1 ){
+      fprintf(stderr, "lagrange_test: FAIL - degree of polynomial must be equal to number of points - 1\n");
+      exit(1);
+    }
 
+    /* error-check: check for repeating x terms */
+    for ( u8 i = 0; i < size - 1; i++ ){
+        for ( u8 j = i + 1; j < size; j++ ){
+          if (coordinates[i]->x == coordinates[j]->x) {
+            fprintf(stderr, "lagrange_test: FAIL - x points repeat: (%zu, %zu) and (%zu, %zu)\n",
+              coordinates[i]->x, coordinates[i]->y, coordinates[j]->x, coordinates[j]->y);
+            exit(1);
+          }
+        }
+    }
+
+    // Perform interpolation for test_poly
+    // Perform interpolation for coordinate points
 }
 
 /* compute_lagrange()
@@ -125,7 +153,7 @@ lagrange_test(lagrange_t * polynomial, lagrange_coordinate coordinates[], u8 siz
 */
 
 static void
-compute_lagrange()
+compute_lagrange(u8 x, u8 y)
 {
 
 

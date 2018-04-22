@@ -34,6 +34,19 @@ typedef struct {
     u8 y;
 } lagrange_coordinate;
 
-// TODO: functions
+
+lagrange_t *
+lagrange_new(u8 coefficients[], u8 size);
+
+lagrange_coordinate *
+lagrange_create_point(u8 x, u8 y);
+
+void
+lagrange_reconstruct(lagrange_t * polynomial, lagrange_coordinate coordinates[], u8 size);
+
+void
+lagrange_test(lagrange_t * polynomial, lagrange_coordinate * coordinates[], u8 size);
+
+
 
 #endif

@@ -167,9 +167,9 @@ galois_divide(u8 a, u8 b){
 
     /* where denominator is 0, resulting in division by zero */
     if ( b == 0 ){
-      fprintf(stderr, "division by zero");
+      fprintf(stderr, "galois_divide: division by zero returns undefined\n");
       exit(1);
     }
 
-    return GALOIS_EXP_TABLE[(GALOIS_LOG_TABLE[a] - GALOIS_LOG_TABLE[b]) % 255 ];
+    return GALOIS_EXP_TABLE[( 255 + GALOIS_LOG_TABLE[a] - GALOIS_LOG_TABLE[b]) % 255 ];
 }
