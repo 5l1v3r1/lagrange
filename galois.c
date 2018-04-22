@@ -126,17 +126,17 @@ u8 GALOIS_MULT_INV_TABLE[256] =
     0xdd, 0x9c, 0x7d, 0xa0, 0xcd, 0x1a, 0x41, 0x1c
 };
 
-u8
+static u8
 galois_add(u8 a, u8 b) {
 	 return a ^ b;
 }
 
-u8
+static u8
 galois_subtract(u8 a, u8 b) {
     return a ^ b;
 }
 
-u8
+static u8
 galois_multiply(u8 a, u8 b) {
 
     /* where any value multipled by 0 returns 0 for any arithmetic */
@@ -154,7 +154,7 @@ galois_multiply(u8 a, u8 b) {
     return GALOIS_EXP_TABLE[(GALOIS_LOG_TABLE[a] + GALOIS_LOG_TABLE[b]) % 255 ];
 }
 
-u8
+static u8
 galois_divide(u8 a, u8 b){
 
     /* where numerator is 0, returning 0 as quotient for any arithmetic */
@@ -172,4 +172,71 @@ galois_divide(u8 a, u8 b){
     }
 
     return GALOIS_EXP_TABLE[( 255 + GALOIS_LOG_TABLE[a] - GALOIS_LOG_TABLE[b]) % 255 ];
+}
+
+/* compute_lagrange()
+ *
+*/
+
+void
+compute_lagrange(lagrange_coordinate * points[], u8 size)
+{
+    int i, j;
+
+    /* stores the resulting coefficients from interpolation */
+    u8 result_coefficients[256];
+
+    /* create temporary polynomial to store accumulated results */
+    u8 temporary_polynomial[256];
+
+    /* stores the temporary denominator for initial term calculation */
+    u8 denominator;
+
+    /* stores temporary term */
+    u8 term[2];
+
+    /* zero out result_coefficients */
+    for ( i = 0; i < size; i++ ){
+        result_coefficients[i] = 0;
+    }
+
+    /* iteratively calculate each term */
+    for ( i = 0; i < size; i++ ){
+      /* zero out the temporary_polynomial */
+      temporary_polynomial[0] = 1;
+
+      /* starting at 1, zero out temporary_polynomial */
+      for ( j = 1; j < size; j++ ){
+        temporary_polynomial[j] = 0;
+      }
+
+      /* perform calculation one term at a time */
+      for ( j = 0; j < size; j++ ){
+
+        if ( i == j )
+          continue;
+
+        denominator = galois_subtract(points[i]->x, points[j]->x);
+        term[0] = galois_divide(points[j]->x , denominator);
+        term[1] = GALOIS_MULT_INV_TABLE[denominator];
+
+        // TODO
+      }
+
+      // multiply by result of f(x)
+    }
+}
+
+static void
+multiply_polynomials(u8 a, u8 b)
+{
+
+
+}
+
+static void
+add_polynomials()
+{
+
+
 }

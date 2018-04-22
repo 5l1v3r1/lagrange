@@ -42,11 +42,9 @@ lagrange_coordinate *
 lagrange_create_point(u8 x, u8 y);
 
 void
-lagrange_reconstruct(lagrange_t * polynomial, lagrange_coordinate coordinates[], u8 size);
+lagrange_reconstruct(lagrange_t * polynomial, lagrange_coordinate * coordinates[], u8 size);
 
 void
 lagrange_test(lagrange_t * polynomial, lagrange_coordinate * coordinates[], u8 size);
-
-
 
 #endif

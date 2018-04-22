@@ -87,9 +87,9 @@ lagrange_create_point(u8 x, u8 y)
  * he/she can then reconstruct the coefficients using a set of coordinate points.
  *
  *  i.e
- *      lagrange_coordinate one = (lagrange_coordinate) lagrange_create_point(0, 3);
+ *      lagrange_coordinate * one = (lagrange_coordinate) lagrange_create_point(0, 3);
  *      // .. etc. etc.
- *      lagrange_coordinate set[1] = { one, two, three, four, five };
+ *      lagrange_coordinate * set[1] = { one, two, three, four, five };
  *
  *      lagrange_t * poly1 = lagrange_new(NULL, NULL);
  *      lagrange_reconstruct(poly1, set, SIZEOF(set));
@@ -97,8 +97,19 @@ lagrange_create_point(u8 x, u8 y)
 */
 
 void
-lagrange_reconstruct(lagrange_t * polynomial, lagrange_coordinate coordinates[], u8 size)
+lagrange_reconstruct(lagrange_t * polynomial, lagrange_coordinate * coordinates[], u8 size)
 {
+    /* error-check: check for repeating x terms */
+    for ( u8 i = 0; i < size - 1; i++ ){
+        for ( u8 j = i + 1; j < size; j++ ){
+          if (coordinates[i]->x == coordinates[j]->x) {
+            fprintf(stderr, "lagrange_reconstruct: x points repeat: (%zu, %zu) and (%zu, %zu)\n",
+              coordinates[i]->x, coordinates[i]->y, coordinates[j]->x, coordinates[j]->y);
+            exit(1);
+          }
+        }
+    }
+
   // Perform interpolation for coordinate points
   // Fill up polynomial struct with result
 
@@ -115,7 +126,8 @@ lagrange_reconstruct(lagrange_t * polynomial, lagrange_coordinate coordinates[],
  *  3. Reconstruct polynomial from coordinates, check against previous lagrange_t type.
  *
  * i.e
- *      lagrange_coordinate test_set[5] = { one, two, three, four, five };
+ *      // .. create points
+ *      lagrange_coordinate * test_set[5] = { one, two, three, four, five };
  *      u8 test_coefficients[5] = { 1, 2, 3, 4, 5 };
  *
  *      lagrange_t * testpoly = lagrange_new(test_coefficients, SIZEOF(test_coefficients));
@@ -135,26 +147,15 @@ lagrange_test(lagrange_t * polynomial, lagrange_coordinate * coordinates[], u8 s
 
     /* error-check: check for repeating x terms */
     for ( u8 i = 0; i < size - 1; i++ ){
-        for ( u8 j = i + 1; j < size; j++ ){
-          if (coordinates[i]->x == coordinates[j]->x) {
-            fprintf(stderr, "lagrange_test: FAIL - x points repeat: (%zu, %zu) and (%zu, %zu)\n",
-              coordinates[i]->x, coordinates[i]->y, coordinates[j]->x, coordinates[j]->y);
-            exit(1);
-          }
+      for ( u8 j = i + 1; j < size; j++ ){
+        if (coordinates[i]->x == coordinates[j]->x) {
+          fprintf(stderr, "lagrange_test: FAIL - x points repeat: (%zu, %zu) and (%zu, %zu)\n",
+            coordinates[i]->x, coordinates[i]->y, coordinates[j]->x, coordinates[j]->y);
+          exit(1);
         }
+      }
     }
 
     // Perform interpolation for test_poly
     // Perform interpolation for coordinate points
-}
-
-/* compute_lagrange()
- *
-*/
-
-static void
-compute_lagrange(u8 x, u8 y)
-{
-
-
 }
