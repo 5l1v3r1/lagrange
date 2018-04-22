@@ -10,8 +10,8 @@
 #define SIZEOF(coefficients) sizeof(coefficients) / sizeof(coefficients[0])
 
 /*
-Galois Mode - can be included to complete operations with Galois arithmetic
-operations
+Galois Mode - included to check if polynomial coefficients are in binary
+  representation, which is necessary for interpolation in Gf(256)
 
 #define GALOIS_MODE 0
 

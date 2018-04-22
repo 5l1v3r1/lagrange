@@ -14,16 +14,20 @@
  * obtain the degree within the function parameter by calling the SIZEOF(..)
  * helper macro.
  *
- * NOTE: when actually utilizing Galois mode, the coefficients array must be filled
+ * NOTE: when actually utilizing reduction mode, the coefficients array must be filled
  * with either 1s or 0s. Notice how that this will represent an actual decimal value.
  * For example, {0, 0, 1, 1} is a decimal 3.
  *
  *  i.e
- *      // 3x^3 + 4x^2 + 9x + 5
+ *      // Standard interpolation without finite fields
+ *      // 3x^3 + 4x^2 + 9x + 5 in the field Q
  *      u8 coefficients[4] = {3, 4, 9, 5};
  *      lagrange_t * poly1 = lagrange_new(coefficients, SIZEOF(coefficients));
  *
 */
+
+// TODO: decimal to binary coefficients array helper
+
 
 lagrange_t *
 lagrange_new(u8 coefficients[], u8 size)
@@ -34,23 +38,20 @@ lagrange_new(u8 coefficients[], u8 size)
     /* create a new heap-allocated lagrange_t type */
     lagrange_t *lt = (lagrange_t*) malloc(sizeof(lagrange_t));
 
-    /* error-checking: check if GALOIS_FLAG is set ensure coefficients and degree */
+    /* error-checking: check if GALOIS_MODE is set ensure coefficients */
     #ifdef GALOIS_MODE
     // continues on with code execution
     #else
 
       /* check coefficients to be binary, since they must be within the field of Gf(2) */
       for ( u8 i = 0; i <= size; i++ ){
-          if ( coefficients[i] != 0 && coefficients[i] != 1 )
-            fprintf(stderr, "GALOIS_MODE: coefficient \"%u\" must be binary\n", coefficients[i]);
+          if ( coefficients[i] != 0 && coefficients[i] != 1 ){
+            fprintf(stderr, "GALOIS_MODE: coefficients must be binary 0 or 1\n");
             exit(1);
+          }
       }
 
-      /* check degree <= 7, since Gf(p^m) requires coefficients with degree <= m - 1 */
-      if (degree >= 7){
-          fprintf(stderr, "GALOIS_MODE: degree specified %u must be less than 7.\n", degree);
-          exit(1);
-      }
+      // TODO: should you even check degree ??
 
     #endif
 
@@ -118,6 +119,10 @@ lagrange_test(lagrange_t * polynomial, lagrange_coordinate coordinates[], u8 siz
 {
 
 }
+
+/* compute_lagrange()
+ *
+*/
 
 static void
 compute_lagrange()

@@ -1,5 +1,19 @@
 #include "galois.h"
 
+/* =======================================
+ * Galois Arithmetic Operations
+ * =======================================
+ *
+ * NOTE: Notice that the implementations of addition and subtraction
+ * are identical; since subtraction is adding with signed values,
+ * XOR is an efficient operation
+ *
+ * NOTE: bit manipulation can be implemented for multiplication / inverse (division)
+ * operations, but lookup tables increases performance and is optimal for cryptography
+ * mathematical operations (such as in AES).
+ *
+ */
+
 static const
 u8 GALOIS_EXP_TABLE[256] =
 {
@@ -112,37 +126,32 @@ u8 GALOIS_MULT_INV_TABLE[256] =
     0xdd, 0x9c, 0x7d, 0xa0, 0xcd, 0x1a, 0x41, 0x1c
 };
 
-/* =======================================
- * Galois Arithmetic Operations
- * =======================================
- * NOTE: Notice that the implementations of addition and subtraction
- * are identical; since subtraction is adding with signed values,
- * XOR is an efficient operation
- *
- * NOTE: bit manipulation can be implemented for multiplication / inverse (division)
- * operations, but lookup tables increases performance and is optimal for cryptography
- * mathematical operations (such as in AES).
- */
-
 u8
 galois_add(u8 a, u8 b) {
-	return a^b;
+	 return a ^ b;
 }
 
 u8
 galois_subtract(u8 a, u8 b) {
-    return a^b;
+    return a ^ b;
 }
 
 u8
 galois_multiply(u8 a, u8 b) {
 
-    /* where any value multipled by 0 returns 0 for any arithmetic*/
-    if ( (a==0) || (b==0) ){
-        return 0;
-    }
+    /* where any value multipled by 0 returns 0 for any arithmetic */
+    if ( (a == 0) || (b == 0) )
+      return 0;
 
-    // TODO: implement table lookup
+    /* where any value multiplied by 1 returns itself for any arithmetic */
+    if ( b == 1 )
+      return a;
+    else if ( a == 1)
+      return b;
+
+    // TODO: PCLMULQDQ with ASM mode
+
+    return GALOIS_EXP_TABLE[(GALOIS_LOG_TABLE[a] + GALOIS_LOG_TABLE[b]) % 255 ];
 }
 
 u8
@@ -150,13 +159,17 @@ galois_divide(u8 a, u8 b){
 
     /* where numerator is 0, returning 0 as quotient for any arithmetic */
     if ( a == 0 )
-        return 0;
+      return 0;
+
+    /* where the denominator is 1, returning the numerator as quotient for any arithmetic */
+    if ( b == 1 )
+      return a;
 
     /* where denominator is 0, resulting in division by zero */
     if ( b == 0 ){
-        fprintf(stderr, "division by zero");
-        exit(1);
+      fprintf(stderr, "division by zero");
+      exit(1);
     }
 
-    // TODO: implement table lookup
+    return GALOIS_EXP_TABLE[(GALOIS_LOG_TABLE[a] - GALOIS_LOG_TABLE[b]) % 255 ];
 }
