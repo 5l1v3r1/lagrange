@@ -179,7 +179,7 @@ galois_divide(u8 a, u8 b){
 */
 
 void
-compute_lagrange(lagrange_coordinate * points[], u8 size)
+compute_lagrange(lagrange_coordinate * points[], u8 size, u8 * result_coefficients)
 {
     int i, j;
 
@@ -218,25 +218,42 @@ compute_lagrange(lagrange_coordinate * points[], u8 size)
 
         denominator = galois_subtract(points[i]->x, points[j]->x);
         term[0] = galois_divide(points[j]->x , denominator);
-        term[1] = GALOIS_MULT_INV_TABLE[denominator];
+        term[1] = galois_divide(1, denominator);
 
-        // TODO
+        temporary_polynomial = multiply_polynomials(temporary_polynomial, term, SIZEOF(temporary_polynomial), SIZEOF(term));
       }
 
       // multiply by result of f(x)
     }
 }
 
-static void
-multiply_polynomials(u8 a, u8 b)
+static u8
+multiply_polynomials(u8 * temp, u8 * term, u8 asize, u8 bsize)
 {
+    int i, j;
 
+    /* create an array for resultant terms */
+    u8 resultterms[256];
 
+    /* create an array for term padding values */
+    u8 termpadding[256];
+
+    for ( i = 0; i < bsize; i++ ){
+      for ( j = 0; j < asize; j++ ){
+        termpadding[i] = galois_multiply(temp[i], term[j]);
+      }
+
+      resultterms = add_polynomials(resultterms, termpadding, SIZEOF(resultterms), SIZEOF(termpadding));
+    }
+
+    return resultterms;
 }
 
-static void
-add_polynomials()
+static u8
+add_polynomials(u8 * a, u8 * b, u8 asize, u8 bsize)
 {
+    u8 result[256];
 
+    //TODO
 
 }

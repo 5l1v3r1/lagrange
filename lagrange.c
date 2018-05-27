@@ -1,6 +1,5 @@
 #include "lagrange.h"
 #include "galois.h"
-// TODO: decimal to binary coefficients array helper
 
 /* lagrange_new()
  *
