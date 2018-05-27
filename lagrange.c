@@ -24,18 +24,18 @@
  *      // Standard interpolation without finite fields
  *      // 3x^3 + 4x^2 + 9x + 5 in the field Q
  *      u8 coefficients[4] = {3, 4, 9, 5};
- *      lagrange_t * poly1 = lagrange_new(coefficients, SIZEOF(coefficients));
+ *      lagrange_t poly1 = lagrange_new(coefficients, SIZEOF(coefficients));
  *
 */
-lagrange_t *
+lagrange_t
 lagrange_new(u8 coefficients[], u8 size)
 {
     /* number of terms - 1 = degree */
     u8 degree;
     degree = size - 1;
 
-    /* create a new heap-allocated lagrange_t type */
-    lagrange_t *lt = (lagrange_t*) malloc(sizeof(lagrange_t));
+    /* create a new lagrange_t type */
+    lagrange_t lt;
 
     /* error-checking: check if GALOIS_MODE is set ensure coefficients */
     #ifndef GALOIS_MODE
@@ -55,24 +55,24 @@ lagrange_new(u8 coefficients[], u8 size)
     #endif
 
     /* set lagrange_t parameters */
-    lt->coefficients = coefficients;
-    lt->degree = degree;
+    lt.coefficients = coefficients;
+    lt.degree = degree;
 
     return lt;
 }
 
-lagrange_coordinate *
+lagrange_coordinate
 lagrange_create_point(u8 x, u8 y)
 {
 
-  /* create a new heap-allocated tuple-like lagrange_coordinate */
-  lagrange_coordinate *lc = (lagrange_coordinate*) malloc(sizeof(lagrange_coordinate));
+  /* create a new tuple-like lagrange_coordinate */
+  lagrange_coordinate lc;
 
   /* no error-checking is necessary, as points are bound to be within unsigned 8-bit field */
 
   /* set lagrange_coordinate parameters */
-  lc->x = x;
-  lc->y = y;
+  lc.x = x;
+  lc.y = y;
 
   return lc;
 
@@ -86,24 +86,28 @@ lagrange_create_point(u8 x, u8 y)
  * he/she can then reconstruct the coefficients using a set of coordinate points.
  *
  *  i.e
- *      lagrange_coordinate * one = (lagrange_coordinate) lagrange_create_point(0, 3);
+ *      lagrange_coordinate one = (lagrange_coordinate) lagrange_create_point(0, 3);
  *      // .. etc. etc.
- *      lagrange_coordinate * set[1] = { one, two, three, four, five };
+ *      lagrange_coordinate set[1] = { one, two, three, four, five };
  *
- *      lagrange_t * poly1 = lagrange_new(NULL, NULL);
+ *      lagrange_t poly1 = lagrange_new(NULL, NULL);
  *      lagrange_reconstruct(poly1, set, SIZEOF(set));
  *
 */
 
 void
-lagrange_reconstruct(lagrange_t * polynomial, lagrange_coordinate * coordinates[], u8 size)
+lagrange_reconstruct(lagrange_t polynomial, lagrange_coordinate coordinates[], u8 size)
 {
+
+    /* resultant coefficeints */
+    u8 coefficients[size];
+
     /* error-check: check for repeating x terms */
     for ( u8 i = 0; i < size - 1; i++ ){
         for ( u8 j = i + 1; j < size; j++ ){
-          if (coordinates[i]->x == coordinates[j]->x) {
+          if (coordinates[i].x == coordinates[j].x) {
             fprintf(stderr, "lagrange_reconstruct: x points repeat: (%zu, %zu) and (%zu, %zu)\n",
-              coordinates[i]->x, coordinates[i]->y, coordinates[j]->x, coordinates[j]->y);
+              coordinates[i].x, coordinates[i].y, coordinates[j].x, coordinates[j].y);
             exit(1);
           }
         }
@@ -126,20 +130,20 @@ lagrange_reconstruct(lagrange_t * polynomial, lagrange_coordinate * coordinates[
  *
  * i.e
  *      // .. create points
- *      lagrange_coordinate * test_set[5] = { one, two, three, four, five };
+ *      lagrange_coordinate test_set[5] = { one, two, three, four, five };
  *      u8 test_coefficients[5] = { 1, 2, 3, 4, 5 };
  *
- *      lagrange_t * testpoly = lagrange_new(test_coefficients, SIZEOF(test_coefficients));
+ *      lagrange_t testpoly = lagrange_new(test_coefficients, SIZEOF(test_coefficients));
  *      lagrange_test(testpoly, test_set, SIZEOF(test_set));
 */
 
 void
-lagrange_test(lagrange_t * polynomial, lagrange_coordinate * coordinates[], u8 size)
+lagrange_test(lagrange_t polynomial, lagrange_coordinate coordinates[], u8 size)
 {
    /* error-check: ensure polynomial coefficients match number of coordinates
     * where points + 1 = degree and points = number of terms (coefficients and constant)
     */
-    if ( polynomial->degree != size - 1 ){
+    if ( polynomial.degree != size - 1 ){
       fprintf(stderr, "lagrange_test: FAIL - degree of polynomial must be equal to number of points - 1\n");
       exit(1);
     }
@@ -147,9 +151,9 @@ lagrange_test(lagrange_t * polynomial, lagrange_coordinate * coordinates[], u8 s
     /* error-check: check for repeating x terms */
     for ( u8 i = 0; i < size - 1; i++ ){
       for ( u8 j = i + 1; j < size; j++ ){
-        if (coordinates[i]->x == coordinates[j]->x) {
+        if (coordinates[i].x == coordinates[j].x) {
           fprintf(stderr, "lagrange_test: FAIL - x points repeat: (%zu, %zu) and (%zu, %zu)\n",
-            coordinates[i]->x, coordinates[i]->y, coordinates[j]->x, coordinates[j]->y);
+            coordinates[i].x, coordinates[i].y, coordinates[j].x, coordinates[j].y);
           exit(1);
         }
       }

@@ -176,10 +176,10 @@ galois_divide(u8 a, u8 b){
 
 /* compute_lagrange()
  *
-*/
+ */
 
 void
-compute_lagrange(lagrange_coordinate * points[], u8 size, u8 * result_coefficients)
+compute_lagrange(lagrange_coordinate points[], u8 size, u8 * result_coefficients)
 {
     int i, j;
 
@@ -216,8 +216,8 @@ compute_lagrange(lagrange_coordinate * points[], u8 size, u8 * result_coefficien
         if ( i == j )
           continue;
 
-        denominator = galois_subtract(points[i]->x, points[j]->x);
-        term[0] = galois_divide(points[j]->x , denominator);
+        denominator = galois_subtract(points[i].x, points[j].x);
+        term[0] = galois_divide(points[j].x , denominator);
         term[1] = galois_divide(1, denominator);
 
         temporary_polynomial = multiply_polynomials(temporary_polynomial, term, SIZEOF(temporary_polynomial), SIZEOF(term));
