@@ -10,15 +10,14 @@
 #define SIZEOF(coefficients) sizeof(coefficients) / sizeof(coefficients[0])
 
 /*
-Galois Mode - included to check if polynomial coefficients are in binary
-  representation, which is necessary for interpolation in Gf(256)
-
-#define GALOIS_MODE 0
-
+ * Galois Mode - included to check if polynomial coefficients are in binary
+ *               representation, which is necessary for interpolation in Gf(256)
 */
 
-/* Represents the core lagrange_t type, which will be used to reconstruct a polynomial
+/*
+ * Represents the core lagrange_t type, which will be used to reconstruct a polynomial
  * based on its coefficients and its computed degree
+ *
 */
 typedef struct {
     u8 * coefficients;
@@ -26,8 +25,10 @@ typedef struct {
 } lagrange_t;
 
 
-/* Represents a tuple-like Cartesian x-y coordinate, which can be used to create
+/*
+ * Represents a tuple-like Cartesian x-y coordinate, which can be used to create
  * points for polynomial reconstruction through interpolation
+ *
 */
 typedef struct {
     u8 x;

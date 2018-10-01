@@ -37,11 +37,7 @@ lagrange_new(u8 coefficients[], u8 size)
     /* create a new lagrange_t type */
     lagrange_t lt;
 
-    /* error-checking: check if GALOIS_MODE is set ensure coefficients */
-    #ifndef GALOIS_MODE
-    // continues on with code execution
-    #else
-
+#ifdef GALOIS_MODE
       /* check coefficients to be binary, since they must be within the field of Gf(2) */
       for ( u8 i = 0; i <= size; i++ ){
           if ( coefficients[i] != 0 && coefficients[i] != 1 ){
@@ -49,10 +45,7 @@ lagrange_new(u8 coefficients[], u8 size)
             exit(1);
           }
       }
-
-      // TODO: should you even check degree ??
-
-    #endif
+#endif
 
     /* set lagrange_t parameters */
     lt.coefficients = coefficients;
@@ -64,18 +57,15 @@ lagrange_new(u8 coefficients[], u8 size)
 lagrange_coordinate
 lagrange_create_point(u8 x, u8 y)
 {
+    /* create a new tuple-like lagrange_coordinate */
+    lagrange_coordinate lc;
 
-  /* create a new tuple-like lagrange_coordinate */
-  lagrange_coordinate lc;
+    /* no error-checking is necessary, as points are bound to be within unsigned 8-bit field */
+    /* set lagrange_coordinate parameters */
+    lc.x = x;
+    lc.y = y;
 
-  /* no error-checking is necessary, as points are bound to be within unsigned 8-bit field */
-
-  /* set lagrange_coordinate parameters */
-  lc.x = x;
-  lc.y = y;
-
-  return lc;
-
+    return lc;
 }
 
 /* lagrange_reconstruct()
@@ -98,24 +88,24 @@ lagrange_create_point(u8 x, u8 y)
 void
 lagrange_reconstruct(lagrange_t polynomial, lagrange_coordinate coordinates[], u8 size)
 {
-
-    /* resultant coefficeints */
+    /* resultant coefficients */
     u8 coefficients[size];
 
     /* error-check: check for repeating x terms */
-    for ( u8 i = 0; i < size - 1; i++ ){
-        for ( u8 j = i + 1; j < size; j++ ){
-          if (coordinates[i].x == coordinates[j].x) {
-            fprintf(stderr, "lagrange_reconstruct: x points repeat: (%zu, %zu) and (%zu, %zu)\n",
-              coordinates[i].x, coordinates[i].y, coordinates[j].x, coordinates[j].y);
-            exit(1);
+    for (u8 i = 0; i < size - 1; i++){
+        for (u8 j = i + 1; j < size; j++){
+
+          /* checks for equality */
+          if (coordinates[i].x == coordinates[j].x){
+              fprintf(stderr, "lagrange_reconstruct: x points repeat: (%zu, %zu) and (%zu, %zu)\n",
+                      coordinates[i].x, coordinates[i].y, coordinates[j].x, coordinates[j].y);
+              exit(1);
           }
         }
     }
 
   // Perform interpolation for coordinate points
   // Fill up polynomial struct with result
-
 }
 
 /* lagrange_test()
@@ -144,19 +134,19 @@ lagrange_test(lagrange_t polynomial, lagrange_coordinate coordinates[], u8 size)
     * where points + 1 = degree and points = number of terms (coefficients and constant)
     */
     if ( polynomial.degree != size - 1 ){
-      fprintf(stderr, "lagrange_test: FAIL - degree of polynomial must be equal to number of points - 1\n");
-      exit(1);
+        fprintf(stderr, "lagrange_test: FAIL - degree of polynomial must be equal to number of points - 1\n");
+        exit(1);
     }
 
     /* error-check: check for repeating x terms */
     for ( u8 i = 0; i < size - 1; i++ ){
-      for ( u8 j = i + 1; j < size; j++ ){
-        if (coordinates[i].x == coordinates[j].x) {
-          fprintf(stderr, "lagrange_test: FAIL - x points repeat: (%zu, %zu) and (%zu, %zu)\n",
-            coordinates[i].x, coordinates[i].y, coordinates[j].x, coordinates[j].y);
-          exit(1);
+        for ( u8 j = i + 1; j < size; j++ ){
+            if (coordinates[i].x == coordinates[j].x) {
+                fprintf(stderr, "lagrange_test: FAIL - x points repeat: (%zu, %zu) and (%zu, %zu)\n",
+                        coordinates[i].x, coordinates[i].y, coordinates[j].x, coordinates[j].y);
+                exit(1);
+            }
         }
-      }
     }
 
     // Perform interpolation for test_poly

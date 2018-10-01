@@ -140,16 +140,14 @@ static u8
 galois_multiply(u8 a, u8 b) {
 
     /* where any value multipled by 0 returns 0 for any arithmetic */
-    if ( (a == 0) || (b == 0) )
-      return 0;
+    if ((a == 0) || (b == 0))
+        return 0;
 
     /* where any value multiplied by 1 returns itself for any arithmetic */
-    if ( b == 1 )
-      return a;
-    else if ( a == 1)
-      return b;
-
-    // TODO: PCLMULQDQ with ASM mode
+    if (b == 1)
+        return a;
+    else if (a == 1)
+        return b;
 
     return GALOIS_EXP_TABLE[(GALOIS_LOG_TABLE[a] + GALOIS_LOG_TABLE[b]) % 255 ];
 }
@@ -158,15 +156,15 @@ static u8
 galois_divide(u8 a, u8 b){
 
     /* where numerator is 0, returning 0 as quotient for any arithmetic */
-    if ( a == 0 )
-      return 0;
+    if (a == 0)
+        return 0;
 
     /* where the denominator is 1, returning the numerator as quotient for any arithmetic */
-    if ( b == 1 )
+    if (b == 1)
       return a;
 
     /* where denominator is 0, resulting in division by zero */
-    if ( b == 0 ){
+    if (b == 0){
       fprintf(stderr, "galois_divide: division by zero returns undefined\n");
       exit(1);
     }
@@ -174,9 +172,14 @@ galois_divide(u8 a, u8 b){
     return GALOIS_EXP_TABLE[( 255 + GALOIS_LOG_TABLE[a] - GALOIS_LOG_TABLE[b]) % 255 ];
 }
 
+
 /* compute_lagrange()
+ * 
+ * From a set of points, compute the coefficients of the polynomial
+ * through Lagrange polynomial interpolation. Store results in passed pointer.
  *
- */
+ * TODO
+*/
 
 void
 compute_lagrange(lagrange_coordinate points[], u8 size, u8 * result_coefficients)
@@ -196,31 +199,32 @@ compute_lagrange(lagrange_coordinate points[], u8 size, u8 * result_coefficients
     u8 term[2];
 
     /* zero out result_coefficients */
-    for ( i = 0; i < size; i++ ){
+    for (i = 0; i < size; i++){
         result_coefficients[i] = 0;
     }
 
     /* iteratively calculate each term */
-    for ( i = 0; i < size; i++ ){
-      /* zero out the temporary_polynomial */
-      temporary_polynomial[0] = 1;
+    for (i = 0; i < size; i++){
 
-      /* starting at 1, zero out temporary_polynomial */
-      for ( j = 1; j < size; j++ ){
-        temporary_polynomial[j] = 0;
-      }
+        /* zero out the temporary_polynomial */
+        temporary_polynomial[0] = 1;
 
-      /* perform calculation one term at a time */
-      for ( j = 0; j < size; j++ ){
+        /* starting at 1, zero out temporary_polynomial */
+        for (j = 1; j < size; j++){
+            temporary_polynomial[j] = 0;
+        }
 
-        if ( i == j )
-          continue;
+        /* perform calculation one term at a time */
+        for ( j = 0; j < size; j++ ){
 
-        denominator = galois_subtract(points[i].x, points[j].x);
-        term[0] = galois_divide(points[j].x , denominator);
-        term[1] = galois_divide(1, denominator);
+            if (i == j)
+                continue;
 
-        temporary_polynomial = multiply_polynomials(temporary_polynomial, term, SIZEOF(temporary_polynomial), SIZEOF(term));
+            denominator = galois_subtract(points[i].x, points[j].x);
+            term[0] = galois_divide(points[j].x, denominator);
+            term[1] = galois_divide(1, denominator);
+
+            temporary_polynomial = multiply_polynomials(temporary_polynomial, term, SIZEOF(temporary_polynomial), SIZEOF(term));
       }
 
       // multiply by result of f(x)
@@ -239,11 +243,11 @@ multiply_polynomials(u8 * temp, u8 * term, u8 asize, u8 bsize)
     u8 termpadding[256];
 
     for ( i = 0; i < bsize; i++ ){
-      for ( j = 0; j < asize; j++ ){
-        termpadding[i] = galois_multiply(temp[i], term[j]);
-      }
+        for ( j = 0; j < asize; j++ ){
+            termpadding[i] = galois_multiply(temp[i], term[j]);
+        }
 
-      resultterms = add_polynomials(resultterms, termpadding, SIZEOF(resultterms), SIZEOF(termpadding));
+        resultterms = add_polynomials(resultterms, termpadding, SIZEOF(resultterms), SIZEOF(termpadding));
     }
 
     return resultterms;
