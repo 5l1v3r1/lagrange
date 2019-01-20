@@ -1,7 +1,5 @@
 #include "lagrange.h"
 
-#define GALOIS_MODE 0
-
 int main(){
     lagrange_coordinate one = lagrange_create_point(1, 4);
     lagrange_coordinate two = lagrange_create_point(2, 15);

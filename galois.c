@@ -4,11 +4,11 @@
  * Galois Arithmetic Operations
  * =======================================
  *
- * NOTE: Notice that the implementations of addition and subtraction
+ * Notice that the implementations of addition and subtraction
  * are identical; since subtraction is adding with signed values,
- * XOR is an efficient operation
+ * XOR is an efficient operation.
  *
- * NOTE: bit manipulation can be implemented for multiplication / inverse (division)
+ * Bit manipulation can be implemented for multiplication / inverse (division)
  * operations, but lookup tables increases performance and is optimal for cryptography
  * mathematical operations (such as in AES).
  *
@@ -89,6 +89,7 @@ u8 GALOIS_LOG_TABLE[256] =
     0x0d, 0x63, 0x8c, 0x80, 0xc0, 0xf7, 0x70, 0x07
 };
 
+
 static const
 u8 GALOIS_MULT_INV_TABLE[256] =
 {
@@ -126,15 +127,18 @@ u8 GALOIS_MULT_INV_TABLE[256] =
     0xdd, 0x9c, 0x7d, 0xa0, 0xcd, 0x1a, 0x41, 0x1c
 };
 
+
 static u8
 galois_add(u8 a, u8 b) {
-	 return a ^ b;
+    return a ^ b;
 }
+
 
 static u8
 galois_subtract(u8 a, u8 b) {
-    return a ^ b;
+    return galois_add(a, b);
 }
+
 
 static u8
 galois_multiply(u8 a, u8 b) {
@@ -151,6 +155,7 @@ galois_multiply(u8 a, u8 b) {
 
     return GALOIS_EXP_TABLE[(GALOIS_LOG_TABLE[a] + GALOIS_LOG_TABLE[b]) % 255 ];
 }
+
 
 static u8
 galois_divide(u8 a, u8 b){
@@ -173,14 +178,23 @@ galois_divide(u8 a, u8 b){
 }
 
 
+/* =======================================
+ * Polynomial Operations 
+ * =======================================
+ *
+ *
+ */
+
+
+
+
+
 /* compute_lagrange()
  * 
  * From a set of points, compute the coefficients of the polynomial
  * through Lagrange polynomial interpolation. Store results in passed pointer.
  *
- * TODO
 */
-
 void
 compute_lagrange(lagrange_coordinate points[], u8 size, u8 * result_coefficients)
 {
@@ -199,9 +213,8 @@ compute_lagrange(lagrange_coordinate points[], u8 size, u8 * result_coefficients
     u8 term[2];
 
     /* zero out result_coefficients */
-    for (i = 0; i < size; i++){
+    for (i = 0; i < size; i++)
         result_coefficients[i] = 0;
-    }
 
     /* iteratively calculate each term */
     for (i = 0; i < size; i++){
@@ -210,13 +223,12 @@ compute_lagrange(lagrange_coordinate points[], u8 size, u8 * result_coefficients
         temporary_polynomial[0] = 1;
 
         /* starting at 1, zero out temporary_polynomial */
-        for (j = 1; j < size; j++){
+        for (j = 1; j < size; j++)
             temporary_polynomial[j] = 0;
-        }
 
         /* perform calculation one term at a time */
-        for ( j = 0; j < size; j++ ){
-
+        for (j = 0; j < size; j++) {
+            
             if (i == j)
                 continue;
 
@@ -225,11 +237,12 @@ compute_lagrange(lagrange_coordinate points[], u8 size, u8 * result_coefficients
             term[1] = galois_divide(1, denominator);
 
             temporary_polynomial = multiply_polynomials(temporary_polynomial, term, SIZEOF(temporary_polynomial), SIZEOF(term));
-      }
+        }
+        
 
-      // multiply by result of f(x)
     }
 }
+
 
 static u8
 multiply_polynomials(u8 * temp, u8 * term, u8 asize, u8 bsize)
@@ -242,22 +255,33 @@ multiply_polynomials(u8 * temp, u8 * term, u8 asize, u8 bsize)
     /* create an array for term padding values */
     u8 termpadding[256];
 
-    for ( i = 0; i < bsize; i++ ){
-        for ( j = 0; j < asize; j++ ){
+    for (i = 0; i < bsize; i++) {
+        for (j = 0; j < asize; j++) {
             termpadding[i] = galois_multiply(temp[i], term[j]);
         }
-
         resultterms = add_polynomials(resultterms, termpadding, SIZEOF(resultterms), SIZEOF(termpadding));
     }
-
     return resultterms;
 }
+
 
 static u8
 add_polynomials(u8 * a, u8 * b, u8 asize, u8 bsize)
 {
+    int i;
+
     u8 result[256];
 
-    //TODO
+    if (asize < bsize)
+        u8 c[bsize - asize] = { 0 };
+            
 
+    else if (aisze > bsize)
+        u8 c[asize - bsize] = { 0 };
+
+    /* add terms and store in result */
+    for (i = 0; i <= asize; i++)
+        u8 result[i] = gf_add(a[i], b[i]);
+
+    return result;
 }
