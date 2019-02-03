@@ -182,10 +182,11 @@ galois_divide(u8 a, u8 b){
  * Polynomial Operations 
  * =======================================
  *
- *
- */
-
-
+ * These are the definitions for methods used within
+ * Lagrange polynomial interactions. The main interface to
+ * be concerned with is compute_lagrange(), which is what
+ * enables us to compute a set of coefficents from points
+*/
 
 
 
@@ -236,11 +237,30 @@ compute_lagrange(lagrange_coordinate points[], u8 size, u8 * result_coefficients
             term[0] = galois_divide(points[j].x, denominator);
             term[1] = galois_divide(1, denominator);
 
-            temporary_polynomial = multiply_polynomials(temporary_polynomial, term, SIZEOF(temporary_polynomial), SIZEOF(term));
+            multiply_polynomials(temporary_polynomial, term, SIZEOF(temporary_polynomial), SIZEOF(term));
         }
         
-
+        add_polynomials(result_coefficients, temporary_polynomial, SIZEOF(result_coefficients), SIZEOF(temporary_polynomial));
     }
+}
+
+// TODO: refactor!
+
+static void
+multiply_inplace(u8 * dest, u8 term, int dest_length)
+{
+    int i;
+    for (i = 0; i < length; i++)
+        dest[i] = galois_mul(dest[i], term);
+}
+
+
+static void 
+add_inplace(u8 * dest, u8 * terms, int dest_length)
+{
+    int i;
+    for (i = 0; i < length; i++)
+        dest[i] = galois_add(dest[i], terms[i]);
 }
 
 
@@ -274,14 +294,11 @@ add_polynomials(u8 * a, u8 * b, u8 asize, u8 bsize)
 
     if (asize < bsize)
         u8 c[bsize - asize] = { 0 };
-            
-
     else if (aisze > bsize)
         u8 c[asize - bsize] = { 0 };
 
     /* add terms and store in result */
     for (i = 0; i <= asize; i++)
         u8 result[i] = gf_add(a[i], b[i]);
-
     return result;
 }
