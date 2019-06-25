@@ -1,6 +1,15 @@
 #include "lagrange.h"
 #include "galois.h"
 
+static void
+die(int code, char * msg)
+{
+    fprintf(code, "Program exited with status %d. Reason:  %s\n",
+            code, msg);
+    exit(code);
+}
+
+
 /* lagrange_new()
  *
  * Create a new polynomial_t type, in the standard form:
@@ -20,15 +29,9 @@
 lagrange_t
 lagrange_new(u8 * coefficients, u8 size)
 {
-    u8 degree;
     lagrange_t lt;
-
-    /* num of terms minus constant = degree */
-    degree = size - 1;
-
-    /* set lagrange_t parameters */
     lt.coefficients = coefficients;
-    lt.degree = degree;
+    lt.degree = size - 1;
     return lt;
 }
 
@@ -37,7 +40,6 @@ lagrange_new(u8 * coefficients, u8 size)
 lagrange_coordinate
 lagrange_create_point(u8 x, u8 y)
 {
-    /* no error-checking is necessary, as points are bound to be within unsigned 8-bit field */
     lagrange_coordinate lc;
     lc.x = x;
     lc.y = y;
@@ -72,11 +74,8 @@ lagrange_reconstruct(lagrange_t polynomial, lagrange_coordinate coordinates[], u
     /* error-check: check for repeating x terms */
     for (u8 i = 0; i < size - 1; i++) {
         for (u8 j = i + 1; j < size; j++) {
-          if (coordinates[i].x == coordinates[j].x){
-              fprintf(stderr, "lagrange_reconstruct: x points repeat: (%zu, %zu) and (%zu, %zu)\n",
-                      coordinates[i].x, coordinates[i].y, coordinates[j].x, coordinates[j].y);
-              exit(1);
-          }
+            if (coordinates[i].x == coordinates[j].x)
+                die(1, "repeating x coordinates");
         }
     }
 
@@ -107,22 +106,13 @@ lagrange_reconstruct(lagrange_t polynomial, lagrange_coordinate coordinates[], u
 void
 lagrange_test(lagrange_t polynomial, lagrange_coordinate coordinates[], u8 size)
 {
-   /* error-check: ensure polynomial coefficients match number of coordinates
-    * where points + 1 = degree and points = number of terms (coefficients and constant)
-    */
-    if (polynomial.degree != size - 1) {
-        fprintf(stderr, "lagrange_test: FAIL - degree of polynomial must be equal to number of points - 1\n");
-        exit(1);
-    }
+    if (polynomial.degree != size - 1)
+        die(1, "degree of polynomial must be equal to number of points - 1");
 
-    /* error-check: check for repeating x terms */
     for (u8 i = 0; i < size - 1; i++) {
         for (u8 j = i + 1; j < size; j++) {
-            if (coordinates[i].x == coordinates[j].x) {
-                fprintf(stderr, "lagrange_test: FAIL - x points repeat: (%zu, %zu) and (%zu, %zu)\n",
-                        coordinates[i].x, coordinates[i].y, coordinates[j].x, coordinates[j].y);
-                exit(1);
-            }
+            if (coordinates[i].x == coordinates[j].x)
+                die(1, "repeating x coordinates");
         }
     }
 
