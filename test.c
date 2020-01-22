@@ -1,3 +1,9 @@
+/*
+ * test.c
+ *
+ *      Simple unit testing suite for polynomial interpolation
+ */
+
 #include "lagrange.h"
 
 int main(){

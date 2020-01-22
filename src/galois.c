@@ -179,7 +179,7 @@ galois_divide(u8 a, u8 b){
 
 
 /* =======================================
- * Polynomial Operations 
+ * Polynomial Operations
  * =======================================
  *
  * These are the definitions for methods used within
@@ -191,7 +191,7 @@ galois_divide(u8 a, u8 b){
 
 
 /* compute_lagrange()
- * 
+ *
  * From a set of points, compute the coefficients of the polynomial
  * through Lagrange polynomial interpolation. Store results in passed pointer.
  *
@@ -229,7 +229,7 @@ compute_lagrange(lagrange_coordinate points[], u8 size, u8 * result_coefficients
 
         /* perform calculation one term at a time */
         for (j = 0; j < size; j++) {
-            
+
             if (i == j)
                 continue;
 
@@ -239,7 +239,7 @@ compute_lagrange(lagrange_coordinate points[], u8 size, u8 * result_coefficients
 
             multiply_polynomials(temporary_polynomial, term, SIZEOF(temporary_polynomial), SIZEOF(term));
         }
-        
+
         add_polynomials(result_coefficients, temporary_polynomial, SIZEOF(result_coefficients), SIZEOF(temporary_polynomial));
     }
 }
@@ -255,7 +255,7 @@ multiply_inplace(u8 * dest, u8 term, int dest_length)
 }
 
 
-static void 
+static void
 add_inplace(u8 * dest, u8 * terms, int dest_length)
 {
     int i;
@@ -299,6 +299,6 @@ add_polynomials(u8 * a, u8 * b, u8 asize, u8 bsize)
 
     /* add terms and store in result */
     for (i = 0; i <= asize; i++)
-        u8 result[i] = gf_add(a[i], b[i]);
+        u8 result[i] = galois_add(a[i], b[i]);
     return result;
 }
